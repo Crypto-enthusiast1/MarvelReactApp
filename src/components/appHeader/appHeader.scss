@@ -1,0 +1,52 @@
+@import '../../style/variables.scss';
+
+*a {
+   text-decoration: none;
+}
+
+.appHeader {
+   padding-top: 50px;
+}
+
+.rightHeader {
+
+
+
+   & ul {
+      display: flex;
+      list-style-type: none;
+      margin-top: 5px;
+      margin-bottom: 0;
+
+      & li,
+      a {
+         color: #000;
+         font-size: 24px;
+         font-style: normal;
+         font-weight: 700;
+         line-height: normal;
+      }
+
+      & a:hover {
+         color: $main-color;
+      }
+   }
+
+}
+
+.leftHeader {
+   margin: 0;
+   font-size: 28px;
+   font-style: normal;
+   font-weight: 700;
+   line-height: normal;
+
+   & a {
+      color: $main-color;
+   }
+}
+
+.appHeader {
+   display: flex;
+   justify-content: space-between;
+}
