@@ -1,0 +1,12 @@
+.randomHero {
+   display: flex;
+
+   & .heroBlockInfo {
+      width: 50%;
+   }
+
+   & .randomHero {
+      width: 50%;
+      align-items: center;
+   }
+}
