@@ -11,7 +11,7 @@ const AppHeader = () => {
          <nav className="rightHeader">
             <ul>
                <li><a href='#' className='red'>Characters</a></li>
-               /
+               <span>/</span>
                <a href='#'><li>Comics</li></a>
             </ul>
          </nav>
