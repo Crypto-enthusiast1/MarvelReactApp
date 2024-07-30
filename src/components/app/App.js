@@ -1,5 +1,6 @@
 import AppHeader from '../appHeader/appHeader'
 import RandomHero from '../appRandomHero/appRandomHero'
+import Heroeslist from '../appHeroesList/appHeroesList'
 
 import './App.scss';
 
@@ -9,6 +10,7 @@ function App() {
       <div className="App">
          <AppHeader />
          <RandomHero />
+         <Heroeslist />
       </div>
    );
 }

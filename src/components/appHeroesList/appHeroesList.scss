@@ -1,0 +1,33 @@
+@import '../../style/variables.scss';
+
+.heroes_grid {
+   display: grid;
+   grid-template-columns: repeat(3, 200px);
+   grid-template-rows: repeat(3, 320px);
+   grid-auto-rows: 320px;
+   list-style-type: none;
+   column-gap: 25px;
+   row-gap: 30px;
+   padding: 0;
+}
+
+.hero_item {
+   display: flex;
+   flex-direction: column;
+
+   &_selected {
+      box-shadow: 0 5px 20px $main-color;
+      transform: translateY(-8px);
+   }
+}
+
+.hero_name {
+   height: 120px;
+   background-color: $dark;
+   padding-top: 15px;
+   color: white;
+   text-transform: uppercase;
+   font-size: 22px;
+   font-weight: 700;
+   line-height: normal;
+}
