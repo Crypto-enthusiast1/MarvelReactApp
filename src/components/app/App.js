@@ -2,6 +2,7 @@ import AppHeader from '../appHeader/appHeader'
 import RandomHero from '../appRandomHero/appRandomHero'
 import Heroeslist from '../appHeroesList/appHeroesList'
 import ErrorBoundary from '../errorBoundary/ErrorBoundary'
+import AppHeroInfo from '../appHeroInfo/appHeroInfo'
 
 import './App.scss';
 
@@ -12,7 +13,10 @@ function App() {
          <ErrorBoundary>
             <AppHeader />
             <RandomHero />
-            <Heroeslist />
+            <div className="heroWrapper">
+               <Heroeslist />
+               <AppHeroInfo />
+            </div>
          </ErrorBoundary>
       </div>
    );
