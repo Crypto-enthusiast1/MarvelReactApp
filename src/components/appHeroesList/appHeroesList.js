@@ -50,6 +50,9 @@ const Heroeslist = () => {
                <div className="hero_name">hulk</div>
             </li>
          </ul>
+         <button className="button button__main button__long">
+            <div className="inner">load more</div>
+         </button>
       </div>
    )
 }

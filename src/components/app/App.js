@@ -1,6 +1,7 @@
 import AppHeader from '../appHeader/appHeader'
 import RandomHero from '../appRandomHero/appRandomHero'
 import Heroeslist from '../appHeroesList/appHeroesList'
+import ErrorBoundary from '../errorBoundary/ErrorBoundary'
 
 import './App.scss';
 
@@ -8,9 +9,11 @@ import './App.scss';
 function App() {
    return (
       <div className="App">
-         <AppHeader />
-         <RandomHero />
-         <Heroeslist />
+         <ErrorBoundary>
+            <AppHeader />
+            <RandomHero />
+            <Heroeslist />
+         </ErrorBoundary>
       </div>
    );
 }
