@@ -25,7 +25,14 @@ class MarvelService extends Component {
 
       const newHero = await this.getResource(`${this._apiBase}characters/${_getRandomId}?&${this._apiKey}`)
 
-      return this._transformHero(newHero)
+      return this._getObjectOfHeroes(newHero.data.results[0])
+   }
+
+   getHeroWithComicsById = async (id) => {
+      const hero = await this.getResource(`${this._apiBase}characters/${id}?&${this._apiKey}`)
+
+      return this._getObjectOfHeroes(hero.data.results[0])
+
    }
 
    _getObjectOfHeroes = (res) => {
@@ -35,16 +42,9 @@ class MarvelService extends Component {
          description: res.description,
          thumbnail: res.thumbnail.path + '.' + res.thumbnail.extension,
          homepage: res.urls[0].url,
-         wiki: res.urls[1].url
-      }
-   }
-   _transformHero = (res) => {
-      return {
-         name: res.data.results[0].name,
-         description: res.data.results[0].description,
-         thumbnail: res.data.results[0].thumbnail.path + '.' + res.data.results[0].thumbnail.extension,
-         homepage: res.data.results[0].urls[0].url,
-         wiki: res.data.results[0].urls[1].url
+         wiki: res.urls[1].url,
+         id: res.id,
+         comics: res.comics.items
       }
    }
 }

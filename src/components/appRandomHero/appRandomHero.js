@@ -10,7 +10,6 @@ import shield from '../../resources/img/shield.png'
 class RandomHero extends Component {
    constructor(props) {
       super(props);
-      this.updateHero();
       this.state = {
          hero: {},
          loading: true,
@@ -18,15 +17,12 @@ class RandomHero extends Component {
       }
    }
 
-   onError = () => {
-      this.setState({ loading: false, error: true })
+   componentDidMount() {
+      this.updateHero()
    }
 
-   heroOnLoaded = (hero) => {
-      this.setState({
-         hero: hero,
-         loading: false
-      })
+   onError = () => {
+      this.setState({ loading: false, error: true })
    }
 
    marvelService = new MarvelService();
@@ -39,13 +35,12 @@ class RandomHero extends Component {
          } else if (res.description && res.description.length > 228) {
             res.description = res.description.slice(0, 228) + '...'
          }
-         this.setState(this.heroOnLoaded(res))
+         this.setState({ hero: res, loading: false })
       }).catch(this.onError);
    }
 
 
    render() {
-
       const { hero, loading, error } = this.state;
       const errorMessage = error ? <ErrorMessage /> : null;
       const load = loading ? <Loading /> : null;

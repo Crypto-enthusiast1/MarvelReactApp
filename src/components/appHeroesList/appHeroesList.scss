@@ -19,6 +19,12 @@
    display: flex;
    flex-direction: column;
    box-shadow: 5px 5px 20px 0px rgba(0, 0, 0, 0.25);
+   cursor: pointer;
+
+   img {
+      height: 200px;
+      object-fit: cover;
+   }
 
    &_selected {
       box-shadow: 0 5px 20px $main-color;
