@@ -24,7 +24,8 @@
    transition: all 0.3s;
 
    &:hover {
-      transform: scale(1.1)
+      transform: scale(1.1);
+      box-shadow: 0 5px 20px $main-color;
    }
 
    img {

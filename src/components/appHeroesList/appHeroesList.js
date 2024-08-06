@@ -7,7 +7,6 @@ class Heroeslist extends Component {
 
    state = {
       heroes: [],
-      active: true,
       loading: true,
       error: false
    }
@@ -28,17 +27,34 @@ class Heroeslist extends Component {
 
    componentDidMount() {
       this.marvelService.getAllHeroes().then(res => {
-         this.setState({ heroes: [...res], loading: false })
+         const updatedHeroes = res.map(hero => ({
+            ...hero, active: false
+         }))
+         this.setState({ heroes: updatedHeroes, loading: false })
       }).catch(this.onError)
    }
 
+   onChangeActivehero = (id) => {
+      const heroes = this.state.heroes;
+      const updatedHeroes = heroes.map(hero => {
+         return hero.id === id ? { ...hero, active: true } : { ...hero, active: false }
+      });
+
+      this.setState({ heroes: updatedHeroes });
+   }
+
    renderNineNewHeroes = (heroes) => {
-      return heroes.map(item => {
+
+      return heroes.map((item, i) => {
          let imgStyle = { 'objectFit': 'cover' };
+         const classActive = item.active ? 'hero_item hero_item_selected' : 'hero_item';
          if (item.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
             imgStyle = { 'objectFit': 'unset' };
          }
-         return (<li className="hero_item" key={item.id} onClick={() => this.props.onCharSelected(item.id)} >
+         return (<li className={classActive} key={item.id} onClick={() => {
+            this.props.onCharSelected(item.id);
+            this.onChangeActivehero(item.id);
+         }} >
             <img src={item.thumbnail} alt={item.name} style={imgStyle} />
             <div className="hero_name">{item.name}</div>
          </li>

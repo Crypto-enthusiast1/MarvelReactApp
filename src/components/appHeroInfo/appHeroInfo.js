@@ -14,14 +14,13 @@ class AppHeroInfo extends Component {
          hero: {},
          firstRenderDone: false,
          loading: true,
-         error: false
+         error: false,
 
       }
    }
 
    componentDidMount() {
       if (this.props.randomHero) {
-         console.log('componentDidMount')
          this.checkAndRender();
       }
    }
@@ -30,7 +29,6 @@ class AppHeroInfo extends Component {
       const { charId, randomHero } = this.props;
 
       if (randomHero !== prevProps.randomHero) {
-         console.log('componentDidUpdate')
          this.checkAndRender();
       }
 
@@ -42,12 +40,11 @@ class AppHeroInfo extends Component {
 
    checkAndRender = () => {
       const { randomHero } = this.props;
-      if (!this.state.firstRenderDone && randomHero) {
-         console.log('checkAndRender после if')
+      if (!this.state.firstRenderDone && randomHero && Object.keys(randomHero).length > 0) { //Обязательно проверять не пустой ли приходит объект randomHero
          this.setState({
             hero: { ...randomHero },
             firstRenderDone: true,
-            // loading: false
+            loading: false
          });
       }
    };
@@ -56,7 +53,7 @@ class AppHeroInfo extends Component {
 
       return (
          <div className="aboutComicsHero">
-            <div className="wrapper" style={{ 'justifyContent': 'center' }}>
+            <div className="wrapper_error" >
                <ErrorMessage />
             </div>
          </div>
@@ -66,7 +63,7 @@ class AppHeroInfo extends Component {
    onLoading = () => {
       return (
          <div className="aboutComicsHero">
-            <div className="wrapper" style={{ 'justifyContent': 'center' }}>
+            <div className="wrapper wrapper_loading" style={{ 'justifyContent': 'center' }}>
                <Loading />
             </div>
          </div>
@@ -79,7 +76,7 @@ class AppHeroInfo extends Component {
       if (!id) {
          return
       }
-      this.setState({ loading: true })
+      this.setState({ loading: true, error: false })
       this.marvelService.getHeroWithComicsById(id).then(item => {
          if (!item.description) {
             item.description = 'There is no data about this character.'
@@ -87,7 +84,7 @@ class AppHeroInfo extends Component {
             item.description = item.description.slice(0, 228) + '...'
          }
          this.setState({ hero: { ...item }, loading: false })
-      })
+      }).catch(this.onError)
    }
 
    renderComics = () => {
