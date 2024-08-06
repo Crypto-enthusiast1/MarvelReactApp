@@ -1,11 +1,8 @@
+import { Component } from 'react'
 import './appHeroesList.scss'
 import MarvelService from '../../services/MarvelService'
 import Loading from '../spiner/Spiner'
 import ErrorMessage from '../errorMessage/ErrorMessage'
-import AppHeroInfo from '../appHeroInfo/appHeroInfo'
-import { Component } from 'react'
-
-
 class Heroeslist extends Component {
 
    state = {
@@ -21,9 +18,17 @@ class Heroeslist extends Component {
       this.setState({ loading: false, error: true })
    }
 
+   preLoad = () => {
+      const arrayLoading = [];
+      for (let i = 0; i < 9; i++) {
+         arrayLoading.push(<Loading key={i} />)
+      }
+      return arrayLoading
+   }
+
    componentDidMount() {
       this.marvelService.getAllHeroes().then(res => {
-         this.setState({ heroes: [...res] })
+         this.setState({ heroes: [...res], loading: false })
       }).catch(this.onError)
    }
 
@@ -43,12 +48,16 @@ class Heroeslist extends Component {
 
 
    render() {
-      const { heroes } = this.state;
-      const content = this.renderNineNewHeroes(heroes)
+      const { heroes, loading, error } = this.state;
+      const content = !(loading || error) ? this.renderNineNewHeroes(heroes) : null;
+      const load = loading ? this.preLoad() : null;
+      const errorMessage = error ? <ErrorMessage /> : null;
       return (
 
          <div className="heroes_list" >
             <ul className="heroes_grid">
+               {load}
+               {errorMessage}
                {content}
             </ul>
             <button className="button button__main button__long">

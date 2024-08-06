@@ -1,6 +1,8 @@
 /* eslint-disable array-callback-return */
-import { Component } from 'react'
+import { Component, Fragment } from 'react'
 import MarvelService from '../../services/MarvelService'
+import Loading from '../spiner/Spiner';
+import ErrorMessage from '../errorMessage/ErrorMessage';
 import './appHeroInfo.scss';
 
 class AppHeroInfo extends Component {
@@ -9,36 +11,82 @@ class AppHeroInfo extends Component {
       super(props);
 
       this.state = {
-         hero: {}
+         hero: {},
+         firstRenderDone: false,
+         loading: true,
+         error: false
 
       }
    }
 
    componentDidMount() {
-      this.updateHeroInfo()
+      if (this.props.randomHero) {
+         console.log('componentDidMount')
+         this.checkAndRender();
+      }
    }
 
    componentDidUpdate(prevProps) {
-      if (this.props.charId !== prevProps.charId) {
-         this.updateHeroInfo();
+      const { charId, randomHero } = this.props;
+
+      if (randomHero !== prevProps.randomHero) {
+         console.log('componentDidUpdate')
+         this.checkAndRender();
+      }
+
+      if (charId && charId !== prevProps.charId) {
+         this.updateHeroInfo(charId);
          this.renderComics()
       }
    }
 
-   marvelService = new MarvelService();
-
-   updateHeroInfo = () => {
-      const { charId } = this.props;
-      if (!charId) {
-         return;
+   checkAndRender = () => {
+      const { randomHero } = this.props;
+      if (!this.state.firstRenderDone && randomHero) {
+         console.log('checkAndRender после if')
+         this.setState({
+            hero: { ...randomHero },
+            firstRenderDone: true,
+            // loading: false
+         });
       }
-      this.marvelService.getHeroWithComicsById(charId).then(item => {
+   };
+
+   onError = () => {
+
+      return (
+         <div className="aboutComicsHero">
+            <div className="wrapper" style={{ 'justifyContent': 'center' }}>
+               <ErrorMessage />
+            </div>
+         </div>
+      )
+   }
+
+   onLoading = () => {
+      return (
+         <div className="aboutComicsHero">
+            <div className="wrapper" style={{ 'justifyContent': 'center' }}>
+               <Loading />
+            </div>
+         </div>
+      )
+   }
+
+
+   marvelService = new MarvelService();
+   updateHeroInfo = (id) => {
+      if (!id) {
+         return
+      }
+      this.setState({ loading: true })
+      this.marvelService.getHeroWithComicsById(id).then(item => {
          if (!item.description) {
             item.description = 'There is no data about this character.'
          } else if (item.description && item.description.length > 228) {
             item.description = item.description.slice(0, 228) + '...'
          }
-         this.setState({ hero: { ...item } })
+         this.setState({ hero: { ...item }, loading: false })
       })
    }
 
@@ -57,29 +105,43 @@ class AppHeroInfo extends Component {
    }
 
    render() {
-      const { hero: { thumbnail, name, description, homepage, wiki } } = this.state
-      const content = this.renderComics();
+      const { hero, loading, error } = this.state
+      const load = loading ? this.onLoading() : null;
+      const errorMessage = error ? this.onError() : null;
+      const allContent = !(loading || error) ? <View hero={hero} comics={this.renderComics} /> : null;
       return (
-         <div className="aboutComicsHero">
-            <div className="wrapper">
-               <img src={thumbnail} alt='hero'></img>
-               <h1 className='heroName'>{name}</h1>
-               <a href={homepage} className="button button__main">
-                  <div className="inner">HOMEPAGE</div>
-               </a>
-               <a href={wiki} className="button button__secondary">
-                  <div className="inner">WIKI</div>
-               </a>
-            </div>
-            <div className="heroDescription">{description}</div>
-
-            <h2 className="comics">Comics:</h2>
-            <ul>
-               {content}
-            </ul>
-         </div>
+         <Fragment>
+            {load}
+            {errorMessage}
+            {allContent}
+         </Fragment>
       )
    }
+}
+
+const View = ({ hero, comics }) => {
+   const { thumbnail, name, description, homepage, wiki } = hero;
+   const content = comics();
+   return (
+      <div className="aboutComicsHero">
+         <div className="wrapper">
+            <img src={thumbnail} alt='hero'></img>
+            <h1 className='heroName'>{name}</h1>
+            <a href={homepage} className="button button__main">
+               <div className="inner">HOMEPAGE</div>
+            </a>
+            <a href={wiki} className="button button__secondary">
+               <div className="inner">WIKI</div>
+            </a>
+         </div>
+         <div className="heroDescription">{description}</div>
+
+         <h2 className="comics">Comics:</h2>
+         <ul>
+            {content}
+         </ul>
+      </div>
+   )
 }
 
 export default AppHeroInfo;

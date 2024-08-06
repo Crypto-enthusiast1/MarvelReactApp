@@ -12,7 +12,8 @@ import './App.scss';
 class App extends Component {
 
    state = {
-      selectedChar: null
+      selectedChar: null,
+      firstRenderHeroOnPage: {}
    }
 
    onCharSelected = (id) => {
@@ -21,15 +22,21 @@ class App extends Component {
       })
    }
 
+   onHeroLoad = (id) => {
+      this.setState({
+         firstRenderHeroOnPage: id
+      })
+   }
+
    render() {
       return (
          <div className="App">
             <ErrorBoundary>
                <AppHeader />
-               <RandomHero />
+               <RandomHero onHeroLoad={this.onHeroLoad} />
                <div className="heroWrapper">
                   <Heroeslist onCharSelected={this.onCharSelected} />
-                  <AppHeroInfo charId={this.state.selectedChar} />
+                  <AppHeroInfo charId={this.state.selectedChar} randomHero={this.state.firstRenderHeroOnPage} />
                </div>
             </ErrorBoundary>
          </div>

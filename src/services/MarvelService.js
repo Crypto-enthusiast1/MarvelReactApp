@@ -22,7 +22,7 @@ class MarvelService extends Component {
 
    getHeroById = async () => {
       const _getRandomId = Math.floor(Math.random() * (1011400 - 1011000) + 1011000)
-
+      
       const newHero = await this.getResource(`${this._apiBase}characters/${_getRandomId}?&${this._apiKey}`)
 
       return this._getObjectOfHeroes(newHero.data.results[0])

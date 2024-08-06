@@ -6,6 +6,7 @@ import Loading from '../spiner/Spiner'
 import ErrorMessage from '../errorMessage/ErrorMessage'
 import mjolnir from '../../resources/img/mjolnir.png'
 import shield from '../../resources/img/shield.png'
+// import AppHeroInfo from '../appHeroInfo/appHeroInfo'
 
 class RandomHero extends Component {
    constructor(props) {
@@ -30,6 +31,7 @@ class RandomHero extends Component {
    updateHero = () => {
       this.setState({ loading: true, error: false })
       this.marvelService.getHeroById().then(res => {
+         this.props.onHeroLoad(res)
          if (!res.description) {
             res.description = 'There is no data about this character.';
          } else if (res.description && res.description.length > 228) {
@@ -45,7 +47,6 @@ class RandomHero extends Component {
       const errorMessage = error ? <ErrorMessage /> : null;
       const load = loading ? <Loading /> : null;
       const newHero = !(loading || error) ? <View hero={hero} /> : null;
-
       return (
          <div className="randomHero">
             {errorMessage}
