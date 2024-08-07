@@ -20,9 +20,39 @@ class MarvelService extends Component {
       return res.data.results.map(this._getObjectOfHeroes)
    }
 
+   getThreeHeroes = async () => {
+      let threeRandomIdOfHero = []
+      let threeNewHero = [];
+      let success = false;
+
+      while (!success) {
+         threeRandomIdOfHero = []
+         for (let i = 0; i < 3; i++) {
+            threeRandomIdOfHero.push(Math.floor(Math.random() * (1011400 - 1011000) + 1011000))
+         }
+
+         try {
+            threeNewHero = await Promise.all([
+               this.getResource(`${this._apiBase}characters/${threeRandomIdOfHero[0]}?&${this._apiKey}`),
+               this.getResource(`${this._apiBase}characters/${threeRandomIdOfHero[1]}?&${this._apiKey}`),
+               this.getResource(`${this._apiBase}characters/${threeRandomIdOfHero[2]}?&${this._apiKey}`)
+            ]);
+            success = true;
+
+         } catch (error) {
+            console.error("Failed to fetch heroes, retrying...", error);
+         }
+
+      }
+
+
+
+      return threeNewHero.map(hero => this._getObjectOfHeroes(hero.data.results[0]))
+   }
+
    getHeroById = async () => {
       const _getRandomId = Math.floor(Math.random() * (1011400 - 1011000) + 1011000)
-      
+
       const newHero = await this.getResource(`${this._apiBase}characters/${_getRandomId}?&${this._apiKey}`)
 
       return this._getObjectOfHeroes(newHero.data.results[0])
@@ -46,6 +76,8 @@ class MarvelService extends Component {
          id: res.id,
          comics: res.comics.items
       }
+
+
    }
 }
 

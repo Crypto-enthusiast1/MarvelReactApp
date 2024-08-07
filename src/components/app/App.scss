@@ -32,6 +32,13 @@
 
 .heroWrapper {
    display: flex;
+   position: relative;
+}
+
+.backGroundImg {
+   position: absolute;
+   right: -156px;
+   bottom: 118px;
 }
 
 @keyframes App-logo-spin {

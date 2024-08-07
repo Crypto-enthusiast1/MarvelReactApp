@@ -8,7 +8,8 @@ class Heroeslist extends Component {
    state = {
       heroes: [],
       loading: true,
-      error: false
+      error: false,
+      threeHeroLoading: false
    }
 
    marvelService = new MarvelService();
@@ -34,6 +35,10 @@ class Heroeslist extends Component {
       }).catch(this.onError)
    }
 
+   componentDidUpdate() {
+
+   }
+
    onChangeActivehero = (id) => {
       const heroes = this.state.heroes;
       const updatedHeroes = heroes.map(hero => {
@@ -45,7 +50,7 @@ class Heroeslist extends Component {
 
    renderNineNewHeroes = (heroes) => {
 
-      return heroes.map((item, i) => {
+      return heroes.map(item => {
          let imgStyle = { 'objectFit': 'cover' };
          const classActive = item.active ? 'hero_item hero_item_selected' : 'hero_item';
          if (item.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
@@ -62,26 +67,43 @@ class Heroeslist extends Component {
       });
    }
 
+   onLoadThreeNewHeroes = () => {
+      this.setState({ threeHeroLoading: true })
+      this.marvelService.getThreeHeroes().then(res => {
+         const newThreeHero = res.map(hero => ({
+            ...hero, active: false
+         }))
+         this.setState(prevState => ({ heroes: [...prevState.heroes, ...newThreeHero], threeHeroLoading: false }))
+      }).catch(this.onError);
+   }
+
 
    render() {
-      const { heroes, loading, error } = this.state;
+      const { heroes, loading, error, threeHeroLoading } = this.state;
       const content = !(loading || error) ? this.renderNineNewHeroes(heroes) : null;
       const load = loading ? this.preLoad() : null;
       const errorMessage = error ? <ErrorMessage /> : null;
+      const newThreeHero = threeHeroLoading ? <Loading /> : this.buttonRender()
       return (
-
          <div className="heroes_list" >
             <ul className="heroes_grid">
                {load}
                {errorMessage}
                {content}
             </ul>
-            <button className="button button__main button__long">
-               <div className="inner">load more</div>
-            </button>
+            {newThreeHero}
          </div>
       )
    }
+
+   buttonRender = () => {
+      return (
+         <button className="button button__main button__long" onClick={this.onLoadThreeNewHeroes}>
+            <div className="inner">load more</div>
+         </button>
+      )
+   }
+
 }
 
 export default Heroeslist;

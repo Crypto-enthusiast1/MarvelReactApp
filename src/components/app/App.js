@@ -3,6 +3,7 @@ import RandomHero from '../appRandomHero/appRandomHero'
 import Heroeslist from '../appHeroesList/appHeroesList'
 import ErrorBoundary from '../errorBoundary/ErrorBoundary'
 import AppHeroInfo from '../appHeroInfo/appHeroInfo'
+import bgImg from '../../resources/img/bg_asset.png'
 import { Component } from 'react'
 
 import './App.scss';
@@ -37,6 +38,7 @@ class App extends Component {
                <div className="heroWrapper">
                   <Heroeslist onCharSelected={this.onCharSelected} />
                   <AppHeroInfo charId={this.state.selectedChar} randomHero={this.state.firstRenderHeroOnPage} />
+                  <img src={bgImg} alt='backGround' className='backGroundImg' />
                </div>
             </ErrorBoundary>
          </div>

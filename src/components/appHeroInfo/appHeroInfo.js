@@ -89,8 +89,8 @@ class AppHeroInfo extends Component {
 
    renderComics = () => {
       const { comics } = this.state.hero;
-      if (!comics) {
-         return;
+      if (comics.length === 0) {
+         return <li>They are no comics avaible about this hero</li>
       }
       return comics.map((item, i) => {
          if (i > 9) return;
@@ -118,11 +118,18 @@ class AppHeroInfo extends Component {
 
 const View = ({ hero, comics }) => {
    const { thumbnail, name, description, homepage, wiki } = hero;
+   let imgStyle = { 'objectFit': 'cover' }
+
+   if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
+      imgStyle = { 'objectFit': 'unset' };
+   }
+
    const content = comics();
+
    return (
       <div className="aboutComicsHero">
          <div className="wrapper">
-            <img src={thumbnail} alt='hero'></img>
+            <img src={thumbnail} alt='hero' style={imgStyle}></img>
             <h1 className='heroName'>{name}</h1>
             <a href={homepage} className="button button__main">
                <div className="inner">HOMEPAGE</div>
