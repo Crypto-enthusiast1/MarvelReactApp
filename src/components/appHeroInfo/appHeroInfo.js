@@ -63,7 +63,7 @@ class AppHeroInfo extends Component {
    onLoading = () => {
       return (
          <div className="aboutComicsHero">
-            <div className="wrapper wrapper_loading" style={{ 'justifyContent': 'center' }}>
+            <div className="wrapper wrapper_loading" style={{ justifyContent: 'center', display: 'unset' }}>
                <Loading />
             </div>
          </div>
@@ -118,17 +118,17 @@ class AppHeroInfo extends Component {
 
 const View = ({ hero, comics }) => {
    const { thumbnail, name, description, homepage, wiki } = hero;
-   let imgStyle = { 'objectFit': 'cover' }
-
+   let imgStyle = { objectFit: 'cover' }
    if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
       imgStyle = { 'objectFit': 'unset' };
    }
+
 
    const content = comics();
 
    return (
       <div className="aboutComicsHero">
-         <div className="wrapper">
+         <div className="wrapper" >
             <img src={thumbnail} alt='hero' style={imgStyle}></img>
             <h1 className='heroName'>{name}</h1>
             <a href={homepage} className="button button__main">
@@ -144,7 +144,9 @@ const View = ({ hero, comics }) => {
          <ul>
             {content}
          </ul>
+
       </div>
+
    )
 }
 
