@@ -9,7 +9,22 @@ class Heroeslist extends Component {
       heroes: [],
       loading: true,
       error: false,
-      threeHeroLoading: false
+      nineHeroLoading: false,
+      offset: 210,
+      noMoreHeroesInDataFromServer: false
+   }
+
+   componentDidMount(offset) {
+      this.marvelService.getAllHeroes(offset).then(res => {
+         const updatedHeroes = res.map(hero => ({
+            ...hero, active: false
+         }))
+         this.setState({ heroes: updatedHeroes, loading: false })
+      }).catch(this.onError)
+   }
+
+   componentDidUpdate() {
+
    }
 
    marvelService = new MarvelService();
@@ -24,19 +39,6 @@ class Heroeslist extends Component {
          arrayLoading.push(<Loading key={i} />)
       }
       return arrayLoading
-   }
-
-   componentDidMount() {
-      this.marvelService.getAllHeroes().then(res => {
-         const updatedHeroes = res.map(hero => ({
-            ...hero, active: false
-         }))
-         this.setState({ heroes: updatedHeroes, loading: false })
-      }).catch(this.onError)
-   }
-
-   componentDidUpdate() {
-
    }
 
    onChangeActivehero = (id) => {
@@ -67,23 +69,29 @@ class Heroeslist extends Component {
       });
    }
 
-   onLoadThreeNewHeroes = () => {
-      this.setState({ threeHeroLoading: true })
-      this.marvelService.getThreeHeroes().then(res => {
-         const newThreeHero = res.map(hero => ({
+   onLoadNineNewHeroes = (offset) => {
+      this.setState({ nineHeroLoading: true })
+      this.marvelService.getAllHeroes(offset).then(res => {
+         if (res.length < 9) {
+            this.setState({ noMoreHeroesInDataFromServer: true })
+         }
+         const newNineHero = res.map(hero => ({
             ...hero, active: false
          }))
-         this.setState(prevState => ({ heroes: [...prevState.heroes, ...newThreeHero], threeHeroLoading: false }))
+         this.setState(prevState => ({ heroes: [...prevState.heroes, ...newNineHero], nineHeroLoading: false, offset: prevState.offset + 9 }))
       }).catch(this.onError);
    }
 
 
    render() {
-      const { heroes, loading, error, threeHeroLoading } = this.state;
+      const { heroes, loading, error, nineHeroLoading, noMoreHeroesInDataFromServer } = this.state;
       const content = !(loading || error) ? this.renderNineNewHeroes(heroes) : null;
       const load = loading ? this.preLoad() : null;
       const errorMessage = error ? <ErrorMessage /> : null;
-      const newThreeHero = threeHeroLoading ? <Loading /> : this.buttonRender()
+      let newNineHero = nineHeroLoading ? <Loading /> : this.buttonRender()
+      if (noMoreHeroesInDataFromServer) {
+         newNineHero = null
+      }
       return (
          <div className="heroes_list" >
             <ul className="heroes_grid">
@@ -91,14 +99,14 @@ class Heroeslist extends Component {
                {errorMessage}
                {content}
             </ul>
-            {newThreeHero}
+            {newNineHero}
          </div>
       )
    }
 
    buttonRender = () => {
       return (
-         <button className="button button__main button__long" onClick={this.onLoadThreeNewHeroes}>
+         <button className="button button__main button__long" onClick={() => this.onLoadNineNewHeroes(this.state.offset + 9)}>
             <div className="inner">load more</div>
          </button>
       )

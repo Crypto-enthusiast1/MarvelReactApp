@@ -2,8 +2,9 @@ import { Component } from "react";
 
 class MarvelService extends Component {
 
-   _apiBase = 'https://gateway.marvel.com:443/v1/public/';
+   _apiBase = 'https://gateway.marvel.com:443/v1/public/'
    _apiKey = 'apikey=e00523b13d7dc4415650fcb181018a25'
+   offset = 210
 
    getResource = async (url) => {
       let res = await fetch(url);
@@ -15,40 +16,37 @@ class MarvelService extends Component {
       return await res.json();
    }
 
-   getAllHeroes = async () => {
-      const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=210&${this._apiKey}`);
+   getAllHeroes = async (offset = 210) => {
+      const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=${offset}&${this._apiKey}`);
       return res.data.results.map(this._getObjectOfHeroes)
    }
 
-   getThreeHeroes = async () => {
-      let threeRandomIdOfHero = []
-      let threeNewHero = [];
-      let success = false;
+   // getThreeHeroes = async () => {
+   //    let threeRandomIdOfHero = []
+   //    let threeNewHero = [];
+   //    let success = false;
 
-      while (!success) {
-         threeRandomIdOfHero = []
-         for (let i = 0; i < 3; i++) {
-            threeRandomIdOfHero.push(Math.floor(Math.random() * (1011400 - 1011000) + 1011000))
-         }
+   //    while (!success) {
+   //       threeRandomIdOfHero = []
+   //       for (let i = 0; i < 3; i++) {
+   //          threeRandomIdOfHero.push(Math.floor(Math.random() * (1011400 - 1011000) + 1011000))
+   //       }
 
-         try {
-            threeNewHero = await Promise.all([
-               this.getResource(`${this._apiBase}characters/${threeRandomIdOfHero[0]}?&${this._apiKey}`),
-               this.getResource(`${this._apiBase}characters/${threeRandomIdOfHero[1]}?&${this._apiKey}`),
-               this.getResource(`${this._apiBase}characters/${threeRandomIdOfHero[2]}?&${this._apiKey}`)
-            ]);
-            success = true;
+   //       try {
+   //          threeNewHero = await Promise.all([
+   //             this.getResource(`${this._apiBase}characters/${threeRandomIdOfHero[0]}?&${this._apiKey}`),
+   //             this.getResource(`${this._apiBase}characters/${threeRandomIdOfHero[1]}?&${this._apiKey}`),
+   //             this.getResource(`${this._apiBase}characters/${threeRandomIdOfHero[2]}?&${this._apiKey}`)
+   //          ]);
+   //          success = true;
 
-         } catch (error) {
-            console.error("Failed to fetch heroes, retrying...", error);
-         }
+   //       } catch (error) {
+   //          console.error("Failed to fetch heroes, retrying...", error);
+   //       }
 
-      }
-
-
-
-      return threeNewHero.map(hero => this._getObjectOfHeroes(hero.data.results[0]))
-   }
+   //    }
+   //    return threeNewHero.map(hero => this._getObjectOfHeroes(hero.data.results[0]))
+   // }
 
    getHeroById = async () => {
       const _getRandomId = Math.floor(Math.random() * (1011400 - 1011000) + 1011000)
