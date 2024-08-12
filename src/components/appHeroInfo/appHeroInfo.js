@@ -3,6 +3,7 @@ import { Component, Fragment } from 'react'
 import MarvelService from '../../services/MarvelService'
 import Loading from '../spiner/Spiner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
+import PropTypes from 'prop-types';
 import './appHeroInfo.scss';
 
 class AppHeroInfo extends Component {
@@ -148,6 +149,11 @@ const View = ({ hero, comics }) => {
       </div>
 
    )
+}
+
+AppHeroInfo.propTypes = {
+   charId: PropTypes.number,
+   randomHero: PropTypes.object,
 }
 
 export default AppHeroInfo;

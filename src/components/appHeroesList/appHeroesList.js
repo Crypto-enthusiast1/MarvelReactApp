@@ -3,6 +3,7 @@ import './appHeroesList.scss'
 import MarvelService from '../../services/MarvelService'
 import Loading from '../spiner/Spiner'
 import ErrorMessage from '../errorMessage/ErrorMessage'
+import PropTypes from 'prop-types';
 class Heroeslist extends Component {
 
    state = {
@@ -111,7 +112,10 @@ class Heroeslist extends Component {
          </button>
       )
    }
+}
 
+Heroeslist.propTypes = {
+   onCharSelected: PropTypes.func,
 }
 
 export default Heroeslist;

@@ -6,6 +6,7 @@ import Loading from '../spiner/Spiner'
 import ErrorMessage from '../errorMessage/ErrorMessage'
 import mjolnir from '../../resources/img/mjolnir.png'
 import shield from '../../resources/img/shield.png'
+import PropTypes from 'prop-types';
 // import AppHeroInfo from '../appHeroInfo/appHeroInfo'
 
 class RandomHero extends Component {
@@ -88,6 +89,10 @@ const View = ({ hero }) => {
          </div>
       </div>
    )
+}
+
+RandomHero.propTypes = {
+   onHeroLoad: PropTypes.func,
 }
 
 export default RandomHero;
