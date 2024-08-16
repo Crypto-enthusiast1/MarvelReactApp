@@ -52,23 +52,39 @@ class Heroeslist extends Component {
    }
 
    renderNineNewHeroes = (heroes) => {
-
       return heroes.map(item => {
          let imgStyle = { 'objectFit': 'cover' };
          const classActive = item.active ? 'hero_item hero_item_selected' : 'hero_item';
          if (item.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
             imgStyle = { 'objectFit': 'unset' };
          }
-         return (<li className={classActive} key={item.id} onClick={() => {
+
+         const handleClick = () => {
             this.props.onCharSelected(item.id);
             this.onChangeActivehero(item.id);
-         }} >
-            <img src={item.thumbnail} alt={item.name} style={imgStyle} />
-            <div className="hero_name">{item.name}</div>
-         </li>
-         )
+         };
+
+         const handleKeyDown = (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+               handleClick();
+            }
+         };
+
+         return (
+            <li
+               className={classActive}
+               key={item.id}
+               tabIndex="0"
+               onClick={handleClick}
+               onKeyDown={handleKeyDown}
+            >
+               <img src={item.thumbnail} alt={item.name} style={imgStyle} />
+               <div className="hero_name">{item.name}</div>
+            </li>
+         );
       });
    }
+
 
    onLoadNineNewHeroes = (offset) => {
       this.setState({ nineHeroLoading: true })
