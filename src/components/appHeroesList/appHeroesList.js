@@ -1,40 +1,37 @@
-import { Component } from 'react'
+import { useEffect, useState } from 'react'
 import './appHeroesList.scss'
 import MarvelService from '../../services/MarvelService'
 import Loading from '../spiner/Spiner'
 import ErrorMessage from '../errorMessage/ErrorMessage'
 import PropTypes from 'prop-types';
-class Heroeslist extends Component {
+const Heroeslist = (props) => {
 
-   state = {
-      heroes: [],
-      loading: true,
-      error: false,
-      nineHeroLoading: false,
-      offset: 210,
-      noMoreHeroesInDataFromServer: false
-   }
+   const [heroes, setHeroes] = useState([]);
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState(false);
+   const [nineHeroLoading, setNineHeroLoading] = useState(false);
+   const [offset, setOffset] = useState(210);
+   const [noMoreHeroesInDataFromServer, setNoMoreHeroesInDataFromServer] = useState(false);
 
-   componentDidMount(offset) {
-      this.marvelService.getAllHeroes(offset).then(res => {
+   const marvelService = new MarvelService();
+
+   useEffect((offset) => {
+      marvelService.getAllHeroes(offset).then(res => {
          const updatedHeroes = res.map(hero => ({
             ...hero, active: false
          }))
-         this.setState({ heroes: updatedHeroes, loading: false })
-      }).catch(this.onError)
+         setHeroes(updatedHeroes)
+         setLoading(false)
+      }).catch(onError)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [])
+
+   const onError = () => {
+      setLoading(false);
+      setError(true);
    }
 
-   componentDidUpdate() {
-
-   }
-
-   marvelService = new MarvelService();
-
-   onError = () => {
-      this.setState({ loading: false, error: true })
-   }
-
-   preLoad = () => {
+   const preLoad = () => {
       const arrayLoading = [];
       for (let i = 0; i < 9; i++) {
          arrayLoading.push(<Loading key={i} />)
@@ -42,16 +39,14 @@ class Heroeslist extends Component {
       return arrayLoading
    }
 
-   onChangeActivehero = (id) => {
-      const heroes = this.state.heroes;
+   const onChangeActivehero = (id) => {
       const updatedHeroes = heroes.map(hero => {
          return hero.id === id ? { ...hero, active: true } : { ...hero, active: false }
       });
-
-      this.setState({ heroes: updatedHeroes });
+      setHeroes(updatedHeroes)
    }
 
-   renderNineNewHeroes = (heroes) => {
+   const renderNineNewHeroes = (heroes) => {
       return heroes.map(item => {
          let imgStyle = { 'objectFit': 'cover' };
          const classActive = item.active ? 'hero_item hero_item_selected' : 'hero_item';
@@ -60,8 +55,8 @@ class Heroeslist extends Component {
          }
 
          const handleClick = () => {
-            this.props.onCharSelected(item.id);
-            this.onChangeActivehero(item.id);
+            props.onCharSelected(item.id);
+            onChangeActivehero(item.id);
          };
 
          const handleKeyDown = (event) => {
@@ -85,53 +80,52 @@ class Heroeslist extends Component {
       });
    }
 
-
-   onLoadNineNewHeroes = (offset) => {
-      this.setState({ nineHeroLoading: true })
-      this.marvelService.getAllHeroes(offset).then(res => {
-         if (res.length < 9) {
-            this.setState({ noMoreHeroesInDataFromServer: true })
-         }
-         const newNineHero = res.map(hero => ({
-            ...hero, active: false
-         }))
-         this.setState(prevState => ({ heroes: [...prevState.heroes, ...newNineHero], nineHeroLoading: false, offset: prevState.offset + 9 }))
-      }).catch(this.onError);
-   }
-
-
-   render() {
-      const { heroes, loading, error, nineHeroLoading, noMoreHeroesInDataFromServer } = this.state;
-      const content = !(loading || error) ? this.renderNineNewHeroes(heroes) : null;
-      const load = loading ? this.preLoad() : null;
-      const errorMessage = error ? <ErrorMessage /> : null;
-      let newNineHero = nineHeroLoading ? <Loading /> : this.buttonRender()
-      if (noMoreHeroesInDataFromServer) {
-         newNineHero = null
-      }
+   const buttonRender = () => {
       return (
-         <div className="heroes_list" >
-            <ul className="heroes_grid">
-               {load}
-               {errorMessage}
-               {content}
-            </ul>
-            {newNineHero}
-         </div>
-      )
-   }
-
-   buttonRender = () => {
-      return (
-         <button className="button button__main button__long" onClick={() => this.onLoadNineNewHeroes(this.state.offset + 9)}>
+         <button className="button button__main button__long" onClick={() => onLoadNineNewHeroes(offset + 9)}>
             <div className="inner">load more</div>
          </button>
       )
    }
+
+
+   const onLoadNineNewHeroes = (offset) => {
+      setNineHeroLoading(true)
+      marvelService.getAllHeroes(offset).then(res => {
+         if (res.length < 9) {
+            setNoMoreHeroesInDataFromServer(true);
+         }
+         const newNineHero = res.map(hero => ({
+            ...hero, active: false
+         }))
+         setHeroes(prevHeroes => [...prevHeroes, ...newNineHero]);
+         setNineHeroLoading(false);
+         setOffset(prevOffset => prevOffset + 9)
+      }).catch(onError);
+   }
+
+   const content = !(loading || error) ? renderNineNewHeroes(heroes) : null;
+   const load = loading ? preLoad() : null;
+   const errorMessage = error ? <ErrorMessage /> : null;
+   let newNineHero = nineHeroLoading ? <Loading /> : buttonRender()
+   if (noMoreHeroesInDataFromServer) {
+      newNineHero = null
+   }
+   return (
+      <div className="heroes_list" >
+         <ul className="heroes_grid">
+            {load}
+            {errorMessage}
+            {content}
+         </ul>
+         {newNineHero}
+      </div>
+   )
+
 }
 
 Heroeslist.propTypes = {
-   onCharSelected: PropTypes.func,
+   onCharSelected: PropTypes.func.isRequired,
 }
 
 export default Heroeslist;

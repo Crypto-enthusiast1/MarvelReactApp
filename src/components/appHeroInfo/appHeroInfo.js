@@ -1,56 +1,52 @@
 /* eslint-disable array-callback-return */
-import { Component, Fragment } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import MarvelService from '../../services/MarvelService'
 import Loading from '../spiner/Spiner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import PropTypes from 'prop-types';
 import './appHeroInfo.scss';
 
-class AppHeroInfo extends Component {
+const AppHeroInfo = (props) => {
 
-   constructor(props) {
-      super(props);
+   const [hero, setHero] = useState({});
+   const [firstRenderDone, setFirstRenderDone] = useState(false);
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState(false);
 
-      this.state = {
-         hero: {},
-         firstRenderDone: false,
-         loading: true,
-         error: false,
-
+   useEffect(() => {
+      if (props.randomHero) {
+         checkAndRender();
       }
-   }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [])
 
-   componentDidMount() {
-      if (this.props.randomHero) {
-         this.checkAndRender();
+   const { randomHero, charId } = props;
+
+   useEffect(() => {
+      if (randomHero) {
+         checkAndRender();
       }
-   }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [randomHero])
 
-   componentDidUpdate(prevProps) {
-      const { charId, randomHero } = this.props;
-
-      if (randomHero !== prevProps.randomHero) {
-         this.checkAndRender();
+   useEffect(() => {
+      if (charId) {
+         updateHeroInfo(charId);
+         renderComics()
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [charId])
 
-      if (charId && charId !== prevProps.charId) {
-         this.updateHeroInfo(charId);
-         this.renderComics()
-      }
-   }
-
-   checkAndRender = () => {
-      const { randomHero } = this.props;
-      if (!this.state.firstRenderDone && randomHero && Object.keys(randomHero).length > 0) { //Обязательно проверять не пустой ли приходит объект randomHero
-         this.setState({
-            hero: { ...randomHero },
-            firstRenderDone: true,
-            loading: false
-         });
+   const checkAndRender = () => {
+      const { randomHero } = props;
+      if (!firstRenderDone && randomHero && Object.keys(randomHero).length > 0) { //Обязательно проверять не пустой ли приходит объект randomHero
+         setHero({ ...randomHero });
+         setFirstRenderDone(true);
+         setLoading(false);
       }
    };
 
-   onError = () => {
+   const onError = () => {
 
       return (
          <div className="aboutComicsHero">
@@ -61,7 +57,7 @@ class AppHeroInfo extends Component {
       )
    }
 
-   onLoading = () => {
+   const onLoading = () => {
       return (
          <div className="aboutComicsHero">
             <div className="wrapper wrapper_loading" style={{ justifyContent: 'center', display: 'unset' }}>
@@ -72,24 +68,27 @@ class AppHeroInfo extends Component {
    }
 
 
-   marvelService = new MarvelService();
-   updateHeroInfo = (id) => {
+   const marvelService = new MarvelService();
+   const updateHeroInfo = (id) => {
       if (!id) {
          return
       }
-      this.setState({ loading: true, error: false })
-      this.marvelService.getHeroWithComicsById(id).then(item => {
+      setLoading(true);
+      setError(false);
+      marvelService.getHeroWithComicsById(id).then(item => {
          if (!item.description) {
             item.description = 'There is no data about this character.'
          } else if (item.description && item.description.length > 228) {
             item.description = item.description.slice(0, 228) + '...'
          }
-         this.setState({ hero: { ...item }, loading: false })
-      }).catch(this.onError)
+         setHero({ ...item });
+         setLoading(false);
+
+      }).catch(onError)
    }
 
-   renderComics = () => {
-      const { comics } = this.state.hero;
+   const renderComics = () => {
+      const { comics } = hero;
       if (comics.length === 0) {
          return <li>They are no comics avaible about this hero</li>
       }
@@ -102,19 +101,16 @@ class AppHeroInfo extends Component {
       })
    }
 
-   render() {
-      const { hero, loading, error } = this.state
-      const load = loading ? this.onLoading() : null;
-      const errorMessage = error ? this.onError() : null;
-      const allContent = !(loading || error) ? <View hero={hero} comics={this.renderComics} /> : null;
-      return (
-         <Fragment>
-            {load}
-            {errorMessage}
-            {allContent}
-         </Fragment>
-      )
-   }
+   const load = loading ? onLoading() : null;
+   const errorMessage = error ? onError() : null;
+   const allContent = !(loading || error) ? <View hero={hero} comics={renderComics} /> : null;
+   return (
+      <Fragment>
+         {load}
+         {errorMessage}
+         {allContent}
+      </Fragment>
+   )
 }
 
 const View = ({ hero, comics }) => {

@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import { useState, useEffect } from 'react'
 import './appRandomHero.scss'
 import '../../style/button.scss'
 import MarvelService from '../../services/MarvelService'
@@ -9,63 +9,59 @@ import shield from '../../resources/img/shield.png'
 import PropTypes from 'prop-types';
 // import AppHeroInfo from '../appHeroInfo/appHeroInfo'
 
-class RandomHero extends Component {
-   constructor(props) {
-      super(props);
-      this.state = {
-         hero: {},
-         loading: true,
-         error: false
-      }
+const RandomHero = (props) => {
+
+   const [hero, setHero] = useState({});
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState(false);
+
+   useEffect(() => {
+      updateHero()
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [])
+
+   const onError = () => {
+      setLoading(false);
+      setError(true);
    }
 
-   componentDidMount() {
-      this.updateHero()
-   }
+   const marvelService = new MarvelService();
 
-   onError = () => {
-      this.setState({ loading: false, error: true })
-   }
-
-   marvelService = new MarvelService();
-
-   updateHero = () => {
-      this.setState({ loading: true, error: false })
-      this.marvelService.getHeroById().then(res => {
-         this.props.onHeroLoad(res)
+   const updateHero = () => {
+      setLoading(true);
+      setError(false);
+      marvelService.getHeroById().then(res => {
+         props.onHeroLoad(res)
          if (!res.description) {
             res.description = 'There is no data about this character.';
          } else if (res.description && res.description.length > 228) {
             res.description = res.description.slice(0, 228) + '...'
          }
-         this.setState({ hero: res, loading: false })
-      }).catch(this.onError);
+         setHero(res);
+         setLoading(false);
+      }).catch(onError);
    }
 
-
-   render() {
-      const { hero, loading, error } = this.state;
-      const errorMessage = error ? <ErrorMessage /> : null;
-      const load = loading ? <Loading /> : null;
-      const newHero = !(loading || error) ? <View hero={hero} /> : null;
-      return (
-         <div className="randomHero">
-            {errorMessage}
-            {load}
-            {newHero}
-            <div className="heroToday">
-               <div>Random character for today! <br />
-                  Do you want to get to know him better?</div>
-               <div>Or choose another one</div>
-               <button className="button button__main" onClick={this.updateHero}>
-                  <div className="inner">TRY IT</div>
-               </button>
-               <img src={shield} alt='shield' className='shield'></img>
-               <img src={mjolnir} alt='mjolnir' className='mjolnir'></img>
-            </div>
+   const errorMessage = error ? <ErrorMessage /> : null;
+   const load = loading ? <Loading /> : null;
+   const newHero = !(loading || error) ? <View hero={hero} /> : null;
+   return (
+      <div className="randomHero">
+         {errorMessage}
+         {load}
+         {newHero}
+         <div className="heroToday">
+            <div>Random character for today! <br />
+               Do you want to get to know him better?</div>
+            <div>Or choose another one</div>
+            <button className="button button__main" onClick={updateHero}>
+               <div className="inner">TRY IT</div>
+            </button>
+            <img src={shield} alt='shield' className='shield'></img>
+            <img src={mjolnir} alt='mjolnir' className='mjolnir'></img>
          </div>
-      )
-   }
+      </div>
+   )
 }
 
 const View = ({ hero }) => {
