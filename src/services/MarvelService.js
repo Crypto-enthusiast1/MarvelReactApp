@@ -1,69 +1,34 @@
-import { Component } from "react";
+import useHttp from '../hooks/http.hook'
 
-class MarvelService extends Component {
+const useMarvelService = () => {
 
-   _apiBase = 'https://gateway.marvel.com:443/v1/public/'
-   _apiKey = 'apikey=e00523b13d7dc4415650fcb181018a25'
-   offset = 210
+   const { loading, error, request, clearError } = useHttp();
 
-   getResource = async (url) => {
-      let res = await fetch(url);
+   const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
+   const _apiKey = 'apikey=e00523b13d7dc4415650fcb181018a25';
+   const _offset = 210;
 
-      if (!res.ok) {
-         throw new Error(`Could not fetch ${url}, status: ${res.status}`)
-      }
-
-      return await res.json();
+   const getAllHeroes = async (offset = _offset) => {
+      const res = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`);
+      return res.data.results.map(_getObjectOfHeroes)
    }
 
-   getAllHeroes = async (offset = 210) => {
-      const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=${offset}&${this._apiKey}`);
-      return res.data.results.map(this._getObjectOfHeroes)
-   }
-
-   // getThreeHeroes = async () => {
-   //    let threeRandomIdOfHero = []
-   //    let threeNewHero = [];
-   //    let success = false;
-
-   //    while (!success) {
-   //       threeRandomIdOfHero = []
-   //       for (let i = 0; i < 3; i++) {
-   //          threeRandomIdOfHero.push(Math.floor(Math.random() * (1011400 - 1011000) + 1011000))
-   //       }
-
-   //       try {
-   //          threeNewHero = await Promise.all([
-   //             this.getResource(`${this._apiBase}characters/${threeRandomIdOfHero[0]}?&${this._apiKey}`),
-   //             this.getResource(`${this._apiBase}characters/${threeRandomIdOfHero[1]}?&${this._apiKey}`),
-   //             this.getResource(`${this._apiBase}characters/${threeRandomIdOfHero[2]}?&${this._apiKey}`)
-   //          ]);
-   //          success = true;
-
-   //       } catch (error) {
-   //          console.error("Failed to fetch heroes, retrying...", error);
-   //       }
-
-   //    }
-   //    return threeNewHero.map(hero => this._getObjectOfHeroes(hero.data.results[0]))
-   // }
-
-   getHeroById = async () => {
+   const getHeroById = async () => {
       const _getRandomId = Math.floor(Math.random() * (1011400 - 1011000) + 1011000)
 
-      const newHero = await this.getResource(`${this._apiBase}characters/${_getRandomId}?&${this._apiKey}`)
+      const newHero = await request(`${_apiBase}characters/${_getRandomId}?&${_apiKey}`)
 
-      return this._getObjectOfHeroes(newHero.data.results[0])
+      return _getObjectOfHeroes(newHero.data.results[0])
    }
 
-   getHeroWithComicsById = async (id) => {
-      const hero = await this.getResource(`${this._apiBase}characters/${id}?&${this._apiKey}`)
+   const getHeroWithComicsById = async (id) => {
+      const hero = await request(`${_apiBase}characters/${id}?&${_apiKey}`)
 
-      return this._getObjectOfHeroes(hero.data.results[0])
+      return _getObjectOfHeroes(hero.data.results[0])
 
    }
 
-   _getObjectOfHeroes = (res) => {
+   const _getObjectOfHeroes = (res) => {
 
       return {
          name: res.name,
@@ -77,6 +42,8 @@ class MarvelService extends Component {
 
 
    }
+
+   return { loading, error, clearError, request, getAllHeroes, getHeroById, getHeroWithComicsById }
 }
 
-export default MarvelService; 
+export default useMarvelService; 

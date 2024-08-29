@@ -24,19 +24,23 @@ const App = () => {
 
    return (
       <div className="App">
+         <AppHeader />
          <ErrorBoundary>
-            <AppHeader />
             <RandomHero onHeroLoad={onHeroLoad} />
-            <div className="heroWrapper">
-               <Heroeslist onCharSelected={onCharSelected} />
-               <AppHeroInfo charId={selectedChar} randomHero={firstRenderHeroOnPage} />
-               <img src={bgImg} alt='backGround' className='backGroundImg' />
-               <ScrollUpButton showUnder={500}>
-                  <img src={up} alt='up' className='hummer' />
-               </ScrollUpButton>
-
-            </div>
          </ErrorBoundary>
+         <div className="heroWrapper">
+            <ErrorBoundary>
+               <Heroeslist onCharSelected={onCharSelected} />
+            </ErrorBoundary>
+            <ErrorBoundary>
+               <AppHeroInfo charId={selectedChar} randomHero={firstRenderHeroOnPage} />
+            </ErrorBoundary>
+            <img src={bgImg} alt='backGround' className='backGroundImg' />
+            <ScrollUpButton showUnder={500}>
+               <img src={up} alt='up' className='hummer' />
+            </ScrollUpButton>
+
+         </div>
       </div>
    );
 }

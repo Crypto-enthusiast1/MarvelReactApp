@@ -1,35 +1,32 @@
 import { useEffect, useState } from 'react'
 import './appHeroesList.scss'
-import MarvelService from '../../services/MarvelService'
+import useMarvelService from '../../services/MarvelService'
 import Loading from '../spiner/Spiner'
 import ErrorMessage from '../errorMessage/ErrorMessage'
 import PropTypes from 'prop-types';
 const Heroeslist = (props) => {
 
    const [heroes, setHeroes] = useState([]);
-   const [loading, setLoading] = useState(true);
-   const [error, setError] = useState(false);
+   // const [loading, setLoading] = useState(true);
    const [nineHeroLoading, setNineHeroLoading] = useState(false);
    const [offset, setOffset] = useState(210);
    const [noMoreHeroesInDataFromServer, setNoMoreHeroesInDataFromServer] = useState(false);
+   const [firstLoadNineHero, setFirstLoadNineHero] = useState(true)
 
-   const marvelService = new MarvelService();
+   const { loading, error, clearError, getAllHeroes } = useMarvelService();
 
    useEffect((offset) => {
-      marvelService.getAllHeroes(offset).then(res => {
+      getAllHeroes(offset).then(res => {
          const updatedHeroes = res.map(hero => ({
             ...hero, active: false
          }))
          setHeroes(updatedHeroes)
-         setLoading(false)
-      }).catch(onError)
+         setFirstLoadNineHero(false)
+         clearError();
+      })
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [])
 
-   const onError = () => {
-      setLoading(false);
-      setError(true);
-   }
 
    const preLoad = () => {
       const arrayLoading = [];
@@ -91,7 +88,7 @@ const Heroeslist = (props) => {
 
    const onLoadNineNewHeroes = (offset) => {
       setNineHeroLoading(true)
-      marvelService.getAllHeroes(offset).then(res => {
+      getAllHeroes(offset).then(res => {
          if (res.length < 9) {
             setNoMoreHeroesInDataFromServer(true);
          }
@@ -101,13 +98,15 @@ const Heroeslist = (props) => {
          setHeroes(prevHeroes => [...prevHeroes, ...newNineHero]);
          setNineHeroLoading(false);
          setOffset(prevOffset => prevOffset + 9)
-      }).catch(onError);
+      });
    }
 
-   const content = !(loading || error) ? renderNineNewHeroes(heroes) : null;
-   const load = loading ? preLoad() : null;
+   // const content = !(loading || error) ? renderNineNewHeroes(heroes) : null;
+   const content = renderNineNewHeroes(heroes);
+   const load = loading && firstLoadNineHero ? preLoad() : null;
    const errorMessage = error ? <ErrorMessage /> : null;
-   let newNineHero = nineHeroLoading ? <Loading /> : buttonRender()
+   let newNineHero = nineHeroLoading ? <Loading /> : buttonRender();
+
    if (noMoreHeroesInDataFromServer) {
       newNineHero = null
    }

@@ -1,36 +1,29 @@
 import { useState, useEffect } from 'react'
 import './appRandomHero.scss'
 import '../../style/button.scss'
-import MarvelService from '../../services/MarvelService'
 import Loading from '../spiner/Spiner'
 import ErrorMessage from '../errorMessage/ErrorMessage'
 import mjolnir from '../../resources/img/mjolnir.png'
 import shield from '../../resources/img/shield.png'
 import PropTypes from 'prop-types';
+import useMarvelService from '../../services/MarvelService'
 // import AppHeroInfo from '../appHeroInfo/appHeroInfo'
 
 const RandomHero = (props) => {
 
+   const { loading, error, getHeroById, clearError } = useMarvelService();
+
    const [hero, setHero] = useState({});
-   const [loading, setLoading] = useState(true);
-   const [error, setError] = useState(false);
+   // const [loading, setLoading] = useState(true);
+
 
    useEffect(() => {
       updateHero()
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [])
 
-   const onError = () => {
-      setLoading(false);
-      setError(true);
-   }
-
-   const marvelService = new MarvelService();
-
    const updateHero = () => {
-      setLoading(true);
-      setError(false);
-      marvelService.getHeroById().then(res => {
+      getHeroById().then(res => {
          props.onHeroLoad(res)
          if (!res.description) {
             res.description = 'There is no data about this character.';
@@ -38,8 +31,8 @@ const RandomHero = (props) => {
             res.description = res.description.slice(0, 228) + '...'
          }
          setHero(res);
-         setLoading(false);
-      }).catch(onError);
+         clearError();
+      })
    }
 
    const errorMessage = error ? <ErrorMessage /> : null;
