@@ -77,15 +77,6 @@ const Heroeslist = (props) => {
       });
    }
 
-   const buttonRender = () => {
-      return (
-         <button className="button button__main button__long" onClick={() => onLoadNineNewHeroes(offset + 9)}>
-            <div className="inner">load more</div>
-         </button>
-      )
-   }
-
-
    const onLoadNineNewHeroes = (offset) => {
       setNineHeroLoading(true)
       getAllHeroes(offset).then(res => {
@@ -99,6 +90,14 @@ const Heroeslist = (props) => {
          setNineHeroLoading(false);
          setOffset(prevOffset => prevOffset + 9)
       });
+   }
+
+   const buttonRender = () => {
+      return (
+         <button className="button button__main button__long" onClick={() => onLoadNineNewHeroes(offset + 9)}>
+            <div className="inner">load more</div>
+         </button>
+      )
    }
 
    // const content = !(loading || error) ? renderNineNewHeroes(heroes) : null;

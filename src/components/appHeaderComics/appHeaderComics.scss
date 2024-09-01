@@ -1,0 +1,18 @@
+@import '../../style/variables.scss';
+
+.comicsHeader {
+   position: relative;
+   display: flex;
+   justify-content: space-between;
+   background-color: $dark;
+   padding-left: 45px;
+   padding-right: 25px;
+
+   span {
+      position: absolute;
+      left: 280px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: white;
+   }
+}

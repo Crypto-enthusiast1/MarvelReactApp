@@ -1,0 +1,53 @@
+@import '../../style/variables.scss';
+
+.comicsWrapper {
+   display: grid;
+   grid-template-columns: repeat(4, 225px);
+   grid-template-rows: repeat(2, minmax(346px, auto));
+   grid-auto-rows: minmax(346px, auto);
+   row-gap: 30px;
+   list-style-type: none;
+   justify-content: space-between;
+   padding: 0;
+   margin-top: 50px;
+   margin-bottom: 0px;
+
+   .comicsTitle {
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: normal;
+      text-align: left;
+   }
+
+   .price {
+      color: rgba(0, 0, 0, 0.60);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: normal;
+      text-align: left;
+   }
+
+   .selected {
+      box-shadow: 0 5px 20px $main-color;
+      transform: translateY(-30px);
+   }
+
+   li {
+      justify-self: center;
+      transition: all 0.3s;
+      cursor: pointer;
+
+      &:hover {
+         // transform: scale(1.1);
+         box-shadow: 0 5px 20px $main-color;
+      }
+   }
+
+   img {
+      height: 346px;
+      width: 225px;
+      object-fit: cover;
+      box-shadow: 5px 5px 20px 0px rgba(0, 0, 0, 0.25);
+   }
+}
