@@ -28,7 +28,7 @@ const ComicsList = (props) => {
 
    const getNewComics = (newOffset) => {
       getAllComics(newOffset).then(res => {
-         if (res.length < 9) {
+         if (res.length < 8) {
             setNoMoreHeroesInDataFromServer(true);
          }
          setComics(prevComics => [...prevComics, ...res.map(comic => ({ ...comic, active: false }))])

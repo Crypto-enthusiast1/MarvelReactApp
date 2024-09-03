@@ -1,18 +1,19 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import './appHeader.scss'
+import { Link, NavLink } from 'react-router-dom';
 
 const AppHeader = () => {
    return (
       <header className='appHeader'>
          <h1 className="leftHeader">
-            <a href='#'>Marvel</a>
+            <Link to='/'>Marvel</Link>
             <span> information portal</span>
          </h1>
          <nav className="rightHeader">
             <ul>
-               <li><a href='#' className='red'>Characters</a></li>
+               <li><NavLink exact to='/' activeClassName='red'>Characters</NavLink></li>
                <span>/</span>
-               <a href='#'><li>Comics</li></a>
+               <li><NavLink exact to='/comics' activeClassName='red'>Comics</NavLink></li>
             </ul>
          </nav>
       </header>
