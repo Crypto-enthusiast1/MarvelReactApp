@@ -3,6 +3,7 @@ import './appHeader.scss'
 import { Link, NavLink } from 'react-router-dom';
 
 const AppHeader = () => {
+
    return (
       <header className='appHeader'>
          <h1 className="leftHeader">
