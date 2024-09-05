@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import useMarvelService from "../../services/MarvelService"
 import Skeleton from '@mui/material/Skeleton';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -23,8 +24,6 @@ const ComicsList = (props) => {
       clearError()
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [])
-
-   console.log(firstLoading)
 
    const getNewComics = (newOffset) => {
       getAllComics(newOffset).then(res => {
@@ -77,7 +76,8 @@ const ComicsList = (props) => {
          };
 
          return (
-            <li
+            <Link
+               to={`/comics/${item.id}`}
                key={item.id}
                tabIndex={0}
                className={classActive}
@@ -86,7 +86,7 @@ const ComicsList = (props) => {
                <img src={item.thumbnail} style={imgStyle} alt="comics" />
                <div className='comicsTitle'>{item.title}</div>
                <div className='price'>{item.price}</div>
-            </li>
+            </Link>
          )
       })
    }

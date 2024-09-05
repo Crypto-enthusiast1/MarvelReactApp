@@ -13,6 +13,7 @@
    margin-bottom: 0px;
 
    .comicsTitle {
+      color: black;
       margin-top: 10px;
       font-size: 14px;
       font-weight: 700;
@@ -33,9 +34,10 @@
       transform: translateY(-30px);
    }
 
-   li {
+   a {
       justify-self: center;
       transition: all 0.3s;
+      text-decoration: none;
       cursor: pointer;
 
       &:hover {

@@ -1,0 +1,46 @@
+@import '../../style/variables.scss';
+
+.comic {
+   display: grid;
+   grid-template-columns: 300px auto auto;
+   grid-template-rows: repeat(5, auto);
+   column-gap: 50px;
+   margin-top: 50px;
+
+   .title {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: normal;
+   }
+
+   .description {
+      font-size: 18px;
+      font-weight: 400;
+      line-height: normal;
+   }
+
+   .wrapper {
+      display: grid;
+      text-align: left;
+      row-gap: 25px;
+   }
+
+   .img {
+      width: 300px;
+      grid-row: 1 / 5;
+   }
+
+   .price {
+      color: $main-color;
+      font-size: 24px;
+      font-weight: 700;
+   }
+
+   .toAll {
+      height: min-content;
+      font-size: 18px;
+      font-weight: 700;
+      text-decoration: none;
+      color: black;
+   }
+}
