@@ -37,10 +37,37 @@
    }
 
    .toAll {
+      position: relative;
       height: min-content;
       font-size: 18px;
       font-weight: 700;
       text-decoration: none;
       color: black;
+
+      &:after {
+         content: '';
+         display: block;
+         position: absolute;
+         height: 3px;
+         width: 0px;
+         transition: all 0.3s;
+      }
+
+      &:hover:after {
+         width: 100%;
+         background: $main-color;
+      }
    }
+}
+
+.sketelonWrapper {
+   display: grid;
+   grid-template-columns: 300px 300px;
+   grid-template-rows: min-content;
+   column-gap: 50px;
+   margin-top: 50px;
+}
+
+.photo {
+   grid-row: 1/6;
 }
