@@ -20,7 +20,6 @@ const ComicsList = (props) => {
             setFirstLoading(false)
          })
       renderComics()
-
       clearError()
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [])
@@ -44,7 +43,6 @@ const ComicsList = (props) => {
             <Skeleton width="30%" animation="wave" />
          </li>)
       }
-
       return arraySkeleton;
    }
 
