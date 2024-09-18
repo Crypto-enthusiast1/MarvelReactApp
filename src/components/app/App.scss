@@ -35,7 +35,11 @@ html {
 }
 
 .heroWrapper {
-   display: flex;
+   display: grid;
+   grid-template-columns: 650px 425px;
+   grid-template-rows: min-content min-content;
+   column-gap: 25px;
+   row-gap: 30px;
    position: relative;
 }
 

@@ -64,6 +64,7 @@ const SingleComicPage = () => {
          {newComic}
       </>
    )
+
 }
 
 export default SingleComicPage

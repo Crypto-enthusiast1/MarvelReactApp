@@ -14,6 +14,12 @@ const useMarvelService = () => {
       return res.data.results.map(_getObjectOfHeroes)
    }
 
+   const getHeroByName = async (name) => {
+      const newHero = await request(`${_apiBase}characters?name=${name}&${_apiKey}`)
+
+      return newHero.data.results.map(_getObjectOfHeroes)
+   }
+
    const getHeroById = async () => {
       const _getRandomId = Math.floor(Math.random() * (1011400 - 1011000) + 1011000)
 
@@ -67,7 +73,7 @@ const useMarvelService = () => {
       }
    }
 
-   return { loading, error, clearError, request, getAllHeroes, getHeroById, getHeroWithComicsById, getAllComics, getComic }
+   return { loading, error, clearError, request, getAllHeroes, getHeroById, getHeroWithComicsById, getAllComics, getComic, getHeroByName }
 }
 
 export default useMarvelService; 

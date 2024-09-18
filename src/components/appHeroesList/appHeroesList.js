@@ -3,11 +3,13 @@ import './appHeroesList.scss'
 import useMarvelService from '../../services/MarvelService'
 import Loading from '../spiner/Spiner'
 import ErrorMessage from '../errorMessage/ErrorMessage'
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
+import Skeleton from '@mui/material/Skeleton'
+import { motion } from "framer-motion"
+
 const Heroeslist = (props) => {
 
    const [heroes, setHeroes] = useState([]);
-   // const [loading, setLoading] = useState(true);
    const [nineHeroLoading, setNineHeroLoading] = useState(false);
    const [offset, setOffset] = useState(210);
    const [noMoreHeroesInDataFromServer, setNoMoreHeroesInDataFromServer] = useState(false);
@@ -31,7 +33,7 @@ const Heroeslist = (props) => {
    const preLoad = () => {
       const arrayLoading = [];
       for (let i = 0; i < 9; i++) {
-         arrayLoading.push(<Loading key={i} />)
+         arrayLoading.push(<Skeleton variant="rectangular" width={200} height={320} animation="wave" key={i} />)
       }
       return arrayLoading
    }
@@ -44,7 +46,7 @@ const Heroeslist = (props) => {
    }
 
    const renderNineNewHeroes = (heroes) => {
-      return heroes.map(item => {
+      return heroes.map((item, i) => {
          let imgStyle = { 'objectFit': 'cover' };
          const classActive = item.active ? 'hero_item hero_item_selected' : 'hero_item';
          if (item.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
@@ -63,7 +65,10 @@ const Heroeslist = (props) => {
          };
 
          return (
-            <li
+            <motion.li
+               initial={{ opacity: 0, scale: 0.5 }}
+               animate={{ opacity: 1, scale: 1 }}
+               transition={{ duration: 0.2, delay: 0.2 }}
                className={classActive}
                key={item.id}
                tabIndex="0"
@@ -72,7 +77,7 @@ const Heroeslist = (props) => {
             >
                <img src={item.thumbnail} alt={item.name} style={imgStyle} />
                <div className="hero_name">{item.name}</div>
-            </li>
+            </motion.li>
          );
       });
    }
@@ -100,7 +105,6 @@ const Heroeslist = (props) => {
       )
    }
 
-   // const content = !(loading || error) ? renderNineNewHeroes(heroes) : null;
    const content = renderNineNewHeroes(heroes);
    const load = loading && firstLoadNineHero ? preLoad() : null;
    const errorMessage = error ? <ErrorMessage /> : null;

@@ -138,7 +138,6 @@ const View = ({ hero, comics }) => {
          <ul>
             {content}
          </ul>
-
       </div>
 
    )

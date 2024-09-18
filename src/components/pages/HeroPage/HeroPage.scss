@@ -1,0 +1,29 @@
+.oneHero {
+   display: flex;
+   flex-wrap: wrap;
+   margin-top: 50px;
+
+   .heroInfo {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      margin-left: 50px;
+
+      h2 {
+         margin: 0 0 25px;
+         font-size: 22px;
+         font-weight: 700;
+      }
+
+      div {
+         font-size: 18px;
+         font-weight: 400;
+         width: 550px;
+      }
+   }
+
+   img {
+      width: 300px;
+      height: 300px;
+   }
+}
