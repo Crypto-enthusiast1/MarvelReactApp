@@ -7,15 +7,11 @@ import mjolnir from '../../resources/img/mjolnir.png'
 import shield from '../../resources/img/shield.png'
 import PropTypes from 'prop-types';
 import useMarvelService from '../../services/MarvelService'
-// import AppHeroInfo from '../appHeroInfo/appHeroInfo'
 
 const RandomHero = (props) => {
 
    const { loading, error, getHeroById, clearError } = useMarvelService();
-
    const [hero, setHero] = useState({});
-   // const [loading, setLoading] = useState(true);
-
 
    useEffect(() => {
       updateHero()

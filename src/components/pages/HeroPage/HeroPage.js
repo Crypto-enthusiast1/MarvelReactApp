@@ -20,7 +20,6 @@ const HeroPage = () => {
       getHeroByName(name).then(res => {
          setHero(res)
          renderHero()
-         console.log(res)
       })
    }
 

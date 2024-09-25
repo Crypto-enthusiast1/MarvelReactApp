@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react"
+import { Link, useParams } from "react-router-dom"
+import { Helmet } from "react-helmet"
 import ErrorMessage from '../errorMessage/ErrorMessage'
-import Skeleton from '@mui/material/Skeleton';
-import ComicsHeader from '../appHeaderComics/appHeaderComics';
-import useMarvelService from "../../services/MarvelService";
-import './SingleComicPage.scss';
+import Skeleton from '@mui/material/Skeleton'
+import ComicsHeader from '../appHeaderComics/appHeaderComics'
+import useMarvelService from "../../services/MarvelService"
+import './SingleComicPage.scss'
 
 
 const SingleComicPage = () => {
@@ -27,6 +28,11 @@ const SingleComicPage = () => {
    const renderComic = () => {
       return (
          <div className='comic'>
+            <Helmet>
+               <meta name="description"
+                  content={comic.title} />
+               <title>{comic.title}</title>
+            </Helmet>
             <img src={comic.thumbnail} alt="img" className='img' />
             <div className='wrapper'>
                <h2 className='title'>{comic.title}</h2>
