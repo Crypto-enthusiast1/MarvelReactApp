@@ -6,12 +6,12 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 import Loading from '../spiner/Spiner'
 import './appComicsList.scss'
 
-const ComicsList = (props) => {
+const ComicsList = () => {
    const [comics, setComics] = useState([]);
    const [newOffset, setNewOffset] = useState(0);
    const [firstLoading, setFirstLoading] = useState(true)
    const [noMoreHeroesInDataFromServer, setNoMoreHeroesInDataFromServer] = useState(false);
-   const { getAllComics, loading, error, clearError } = useMarvelService();
+   const { getAllComics, loading, clearError, process, setProcess } = useMarvelService();
 
    useEffect(() => {
       getAllComics().then(res =>
@@ -30,7 +30,7 @@ const ComicsList = (props) => {
             setNoMoreHeroesInDataFromServer(true);
          }
          setComics(prevComics => [...prevComics, ...res.map(comic => ({ ...comic, active: false }))])
-      })
+      }).then(() => setProcess('confirmed'))
       setNewOffset(prevOffset => prevOffset + 8)
    }
 
@@ -60,7 +60,6 @@ const ComicsList = (props) => {
          let imgStyle = { 'objectFit': 'cover' };
 
          const handleClick = () => {
-            // props.onCharSelected(item.id);
             onChangeActivehero(item.id);
          };
          if (item.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
@@ -97,10 +96,20 @@ const ComicsList = (props) => {
       )
    }
 
+   const setContent = (process, Component) => {
+      switch (process) {
+         case 'waiting':
+         case 'loading':
+            return firstLoading ? preLoadSkeleton() : <Component />
+         case 'confirmed':
+            return renderComics()
+         case 'error':
+            return <ErrorMessage />
+         default:
+            throw new Error("Quelque chose s'est mal passe")
+      }
+   }
 
-   const load = firstLoading ? preLoadSkeleton() : null;
-   const errorMessage = error ? <ErrorMessage /> : null;
-   const content = renderComics();
    let button = loading && !firstLoading ? <Loading /> : buttonRender();
 
    if (noMoreHeroesInDataFromServer) {
@@ -110,9 +119,7 @@ const ComicsList = (props) => {
    return (
       <div>
          <ul className='comicsWrapper'>
-            {load}
-            {errorMessage}
-            {content}
+            {setContent(process, () => renderComics())}
          </ul>
          {button}
       </div>

@@ -10,16 +10,8 @@ const AppHeroInfo = (props) => {
 
    const [hero, setHero] = useState({});
    const [firstRenderDone, setFirstRenderDone] = useState(false);
-   const [loading, setLoading] = useState(true)
-   const { error, clearError, getHeroWithComicsById } = useMarvelService();
+   const { clearError, getHeroWithComicsById, process, setProcess } = useMarvelService();
    const { randomHero, charId } = props;
-
-   useEffect(() => {
-      if (props.randomHero) {
-         checkAndRender();
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [])
 
    useEffect(() => {
       if (randomHero) {
@@ -39,14 +31,14 @@ const AppHeroInfo = (props) => {
    const checkAndRender = () => {
       const { randomHero } = props;
       if (!firstRenderDone && randomHero && Object.keys(randomHero).length > 0) { //Обязательно проверять не пустой ли приходит объект randomHero
+         setProcess('loading')
          setHero({ ...randomHero });
          setFirstRenderDone(true);
-         setLoading(false)
+         setProcess('confirmed')
       }
    };
 
    const onError = () => {
-
       return (
          <div className="aboutComicsHero">
             <div className="wrapper_error" >
@@ -70,7 +62,6 @@ const AppHeroInfo = (props) => {
       if (!id) {
          return
       }
-      setLoading(true)
       getHeroWithComicsById(id).then(item => {
          if (!item.description) {
             item.description = 'There is no data about this character.'
@@ -79,9 +70,8 @@ const AppHeroInfo = (props) => {
          }
          clearError();
          setHero({ ...item });
-         setLoading(false)
-
-      }).catch(onError)
+      }).then(() => setProcess('confirmed'))
+         .catch(onError)
    }
 
    const renderComics = () => {
@@ -98,14 +88,23 @@ const AppHeroInfo = (props) => {
       })
    }
 
-   const load = loading ? onLoading() : null;
-   const errorMessage = error ? onError() : null;
-   const allContent = !(loading || error) ? <View hero={hero} comics={renderComics} /> : null;
+   const setContent = (process, hero) => {
+      switch (process) {
+         case 'waiting':
+         case 'loading':
+            return onLoading()
+         case 'confirmed':
+            return <View hero={hero} comics={renderComics} />
+         case 'error':
+            return onError()
+         default:
+            throw new Error("Quelque chose s'est mal passe")
+      }
+   }
+
    return (
       <Fragment>
-         {load}
-         {errorMessage}
-         {allContent}
+         {setContent(process, hero)}
       </Fragment>
    )
 }

@@ -10,15 +10,17 @@ import useMarvelService from '../../services/MarvelService'
 
 const RandomHero = (props) => {
 
-   const { loading, error, getHeroById, clearError } = useMarvelService();
+   const { getHeroById, clearError, process, setProcess } = useMarvelService();
    const [hero, setHero] = useState({});
 
    useEffect(() => {
+      setProcess('loading')
       updateHero()
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [])
 
    const updateHero = () => {
+      setProcess('loading')
       getHeroById().then(res => {
          props.onHeroLoad(res)
          if (!res.description) {
@@ -28,17 +30,26 @@ const RandomHero = (props) => {
          }
          setHero(res);
          clearError();
-      })
+      }).then(() => setProcess('confirmed'))
    }
 
-   const errorMessage = error ? <ErrorMessage /> : null;
-   const load = loading ? <Loading /> : null;
-   const newHero = !(loading || error) ? <View hero={hero} /> : null;
+   const setContent = (process, hero) => {
+      switch (process) {
+         case 'waiting':
+         case 'loading':
+            return <Loading />
+         case 'confirmed':
+            return <View hero={hero} />
+         case 'error':
+            return <ErrorMessage />
+         default:
+            throw new Error("Quelque chose s'est mal passe")
+      }
+   }
+
    return (
       <div className="randomHero">
-         {errorMessage}
-         {load}
-         {newHero}
+         {setContent(process, hero)}
          <div className="heroToday">
             <div>Random character for today! <br />
                Do you want to get to know him better?</div>
