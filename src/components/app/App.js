@@ -19,7 +19,7 @@ const App = () => {
             <main>
                <Suspense fallback={<Loading />}>
                   <Routes>
-                     <Route exact path='/' element={<MainPage />}></Route>\
+                     <Route exact path='/' element={<MainPage />}></Route>
                      <Route exact path='/:heroName' element={<HeroPage />}></Route>
                      <Route exact path='/comics' element={<ComicsPage />}></Route>
                      <Route exact path='/comics/:comicId' element={<SingleComicPage />}></Route>
